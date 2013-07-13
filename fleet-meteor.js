@@ -10,6 +10,12 @@ if (Meteor.isClient) {
         console.log("You pressed the button");
     }
   });
+
+  Template.audioTestButtons.rendered = function() {
+    initAutoTestButtons();
+  }
+
+  // init();
 }
 
 if (Meteor.isServer) {
