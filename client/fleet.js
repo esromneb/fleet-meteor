@@ -6,6 +6,8 @@ var ttsInput, txtPhone, textMsgNum, textMsg, txtFilename, txtContents, txtRead, 
 $(document).ready(function() {
   // Handler for .ready() called.
   gm.system.init();
+
+  initAutoTestButtons();
 });
 
 initAutoTestButtons = function()
@@ -55,7 +57,8 @@ initAutoTestButtons = function()
 var audioHandle;
 
 var play = function() {
-	var mp3Url = 'http://127.0.0.1:49770/preview/Fleet/media/Knight%20Rider%20Theme%20Song.mp3';
+	var mp3Url = 'http://localhost:3000/media/Knight%20Rider%20Theme%20Song%20Bass.mp3';
+    mp3Url = 'http://127.0.0.1:49770/preview/Fleet/media/Knight%20Rider%20Theme%20Song%20Bass.mp3';
 	audioHandle = gm.media.play(mp3Url, 'mixedAudio');
 	console.log('clicked');
 };
