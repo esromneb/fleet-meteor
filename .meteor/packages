@@ -6,3 +6,11 @@
 autopublish
 insecure
 preserve-inputs
+jquery
+bootstrap
+router
+less
+accounts-base
+accounts-password
+font-awesome
+presence
