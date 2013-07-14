@@ -3,8 +3,8 @@ mapPopouts = [];
 
 initializeCarMap = function() {
     var mapOptions = {
-        center: new google.maps.LatLng(37.418909, -122.093725),
-        zoom: 12,
+        center: new google.maps.LatLng(37.596637,-122.400055),
+        zoom: 9,
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     incarMapObject = new google.maps.Map(document.getElementById("car-map-canvas"), mapOptions);
