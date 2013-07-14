@@ -4,44 +4,67 @@
 </head>
 
 <body>
-  {{> hello}}
-  {{> incarMap}}
+	<div class="container-fluid">
+	  <div class="row-fluid">
+		  <div id="header" class="span12">
+			  <!--Header content-->
+			  {{> header}}
+		  </div>
+	  </div>
+	  <div class="row-fluid">
+		  <div class="span12">
+			  <!--Main Visible-->
+			  <div class="row-fluid">
+				  <div class="span10">
+					  <!--Main Map-->
+					  {{> incarMap}}
+				  </div>
+				  <div class="side-bar span2">
+					  <!--Side Menu-->
+					  {{> sideMenu}}
+				  </div>
+			  </div>
+		  </div>
+	  </div>
+  </div>
 </body>
 
-<template name="hello">
-  <h1>Welcome to Fleet!</h1>
-	{{#unless currentUser}}
-		{{> login}}
-	{{/unless}}
-    {{greeting}}
-	<input id="playRider" type="button" value="Click" />
-	{{#if currentUser}}
-	<p>Current Car: {{currentUser.username}}</p>
-	<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>
-	{{/if}}
-	<p>Base url: {{baseUrl}}</p>
-
-
-	{{#if currentUser}}
-		<input id="storeLocation" type="button" class="btn btn-primary"value="Location into db" />
-		<a id="logout" href="#" class="btn btn-danger" ><i class="icon-truck"></i> Logout</a>
-	{{/if}}
+<template name="header">
+	<h1 id="title">Fleet</h1>
 </template>
-
-
-<template name="login">
-	<h1>Which Car Are You?</h1>
-	<p>
-	<a id="carOne" href="#" type="button" class="btn btn-primary" value="Car One" ><i class="icon-dashboard"></i> Car One</a>
-	<a id="carTwo" href="#" type="button" class="btn btn-primary" value="Car Two" ><i class="icon-dashboard"></i> Car Two</a>
-	</p>
-</template>
-
 
 <template name="incarMap">
 	<div id="map-container">
         <div id="car-map-canvas"></div>
 	</div>
+</template>
+
+<template name="sideMenu">
+	{{#unless currentUser}}
+	{{> login}}
+	{{/unless}}
+	{{greeting}}
+	<input id="playRider" type="button" value="Click" />
+	{{#if currentUser}}
+	<p>Current Car: {{currentUser.username}}</p>
+	<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>
+	{{/if}}
+	<!--<p>Base url: {{baseUrl}}</p>-->
+
+
+	{{#if currentUser}}
+	<input id="storeLocation" type="button" class="btn btn-primary"value="Location into db" />
+	<a id="logout" href="#" class="btn btn-danger" ><i class="icon-truck"></i> Logout</a>
+	{{/if}}
+</template>
+
+
+<template name="login">
+	<h2>Login</h2>
+	<p>
+		<a id="carOne" href="#" type="button" class="btn btn-primary" value="Car One" ><i class="icon-dashboard"></i> Car One</a>
+		<a id="carTwo" href="#" type="button" class="btn btn-primary" value="Car Two" ><i class="icon-dashboard"></i> Car Two</a>
+	</p>
 </template>
 
 <template name="audioTestButtons">

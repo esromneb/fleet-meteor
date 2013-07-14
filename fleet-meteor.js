@@ -1,21 +1,21 @@
 if (Meteor.isClient) {
-  Template.hello.greeting = function () {
+  Template.sideMenu.greeting = function () {
     return "Welcome to fleet-meteor.";
   };
-  Template.hello.baseUrl = function () {
+  Template.sideMenu.baseUrl = function () {
     return Session.get('baseUrl');
   };
-  Template.hello.myLocation = function () {
+  Template.sideMenu.myLocation = function () {
     if(Meteor.user() && Meteor.user().profile && Meteor.user().profile.location){
       return Meteor.user().profile.location;
     }
   };
 
-  Template.hello.created = function () {
+  Template.sideMenu.created = function () {
 //    Meteor.loginWithPassword('carOne', 'pass');
   };
 
-  Template.hello.events({
+  Template.sideMenu.events({
     'click #playRider' : function () {
       // template data, if any, is available in 'this'
       var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/Knight%20Rider%20Theme%20Song%20Bass.mp3';
