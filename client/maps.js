@@ -14,7 +14,40 @@ initializeCarMap = function() {
     //populateCarMapPins();
     showCarPositionsWithMarkers();
     liveUpdatePinsOnMap();
-//    calculateResting();
+
+
+
+    google.maps.event.addListener(incarMapObject, 'click', function(event) {
+        // 3 seconds after the center of the map has changed, pan back to the
+        // marker.
+
+
+        bootbox.dialog("Add a pin?", [{
+            "label" : "Yes!",
+            "class" : "btn-success",
+            "callback": function() {
+                var lat = event.latLng.jb;
+                var lon = event.latLng.kb;
+
+                Destinations.insert({lat:lat, lon:lon});
+            }
+        }, {
+            "label" : "No.",
+            "class" : "btn-danger",
+            "callback": function() {
+
+            }
+        }]);
+
+
+//        console.log('click');
+
+
+//    window.setTimeout(function() {
+//        map.panTo(marker.getPosition());
+//    }, 3000);
+    });
+
 };
 
 
@@ -45,10 +78,10 @@ Template.incarMap.rendered = function () {
 
 
 
-markPinAsPending = function(pin)
+markPinAsPending = function(pinId)
 {
-    console.log('marking pin with id' + pin._id);
-    Destinations.update(pin._id, {$set: { serviceStatus:{ state:'pending'} }});
+    console.log('marking pin with id' + pinId);
+    Destinations.update(pinId, {$set: { serviceStatus:{ state:'pending'} }});
 };
 
 var htmlPopupForPin = function(pin)
@@ -61,66 +94,11 @@ var htmlPopupForPin = function(pin)
         status = 'pending';
         statusImg = '<img src="/img/03-loopback.png">';
     }
-    return "<h5>Destination</h5><h6>Status: " + status + " " + statusImg + "</h6><a href='#' class='btn'><img src='/img/63-runner.png'/> Send a Car</a>" +
+
+    var sendCarLink = 'javascript:markPinAsPending("' + pin._id + '");';
+    return "<h5>Destination</h5><h6>Status: " + status + " " + statusImg + "</h6><a href='"+sendCarLink+"' class='btn'><img src='/img/63-runner.png'/> Send a Car</a>" +
         "<br>" +
         "";
-}
-
-populateCarMapPins = function()
-{
-    var d = Destinations.findOne();
-
-    var pins = Destinations.find().fetch();
-
-    var incar = Session.get('mapIsInCar');
-
-    for( x in pins )
-    {
-
-        (function()
-        {
-            var pin = pins[x];
-
-            var contentHtml = "" + pin.lat + "," + pin.lon;
-
-
-            if( !incar )
-            {
-                contentHtml = htmlPopupForPin(pin);
-            }
-
-            // callout window (content can be full html)
-            var infowindow = new google.maps.InfoWindow({
-                content: contentHtml
-            });
-
-            mapPopouts.push(infowindow);
-
-            var pinLatlng = new google.maps.LatLng(pin.lat, pin.lon);
-            var marker = new google.maps.Marker({
-                position: pinLatlng,
-                title:"",
-                draggable:true
-            });
-            pinsOnMap[pin._id] = marker;
-
-            // wire click for pin
-            google.maps.event.addListener(marker, 'click', function() {
-
-                for( x in mapPopouts )
-                {
-                    var popout = mapPopouts[x];
-                    popout.close();
-                }
-                infowindow.open(incarMapObject,marker);
-            });
-
-            // To add the marker to the map, call setMap();
-            marker.setMap(incarMapObject);
-        }).call(this);
-    }
-
-//    console.log(d);
 }
 
 showCarPositionsWithMarkers = function()
@@ -259,16 +237,21 @@ var liveUpdatePinsOnMap = function(){
     pinsOnMap[document._id].setPosition(pinLatlng);
   };
 
+  var incar = Session.get('mapIsInCar');
+
+
   Destinations.find({}).observe({
     added: function(document){
       console.log("destination added!");
 
       if(!pinsOnMap[document._id]){
         var contentHtml = "" + document.lat + "," + document.lon;
-//        if( !incar )
-//        {
-//          contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
-//        }
+
+        if( !incar )
+        {
+          contentHtml = htmlPopupForPin(document);
+        }
+
         var infowindow = new google.maps.InfoWindow({
           content: contentHtml
         });
@@ -278,7 +261,7 @@ var liveUpdatePinsOnMap = function(){
         var marker = new google.maps.Marker({
           position: pinLatlng,
           title:"",
-          draggable:true
+          draggable:!incar
         });
         pinsOnMap[document._id] = marker;
 
@@ -292,6 +275,15 @@ var liveUpdatePinsOnMap = function(){
           }
           infowindow.open(incarMapObject,marker);
         });
+
+
+        google.maps.event.addListener(marker,'dragend',function(event){
+            var lat = event.latLng.jb;
+            var lon = event.latLng.kb;
+           Destinations.update(document._id, {$set: {lat:lat, lon:lon }});
+           console.log(document._id + "  " + lat + "," +lon);
+        });
+
         marker.setMap(incarMapObject);
       }
       else{
