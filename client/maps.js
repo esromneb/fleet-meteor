@@ -1,4 +1,5 @@
 incarMapObject = null;
+mapPopouts = [];
 
 initializeCarMap = function() {
     var mapOptions = {
@@ -12,17 +13,10 @@ initializeCarMap = function() {
     calculateResting();
 }
 
-
-
-if( Meteor.isClient )
-{
-    $(document).ready(function(){
-        console.log('about to attach map loader');
-        google.maps.event.addDomListener(window, 'load', initializeCarMap);
-    });
-}
-
-mapPopouts = [];
+Template.incarMap.rendered = function () {
+  console.log('about to attach map loader');
+  google.maps.event.addDomListener(window, 'load', initializeCarMap);
+};
 
 populateCarMapPins = function()
 {
