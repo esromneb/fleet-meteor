@@ -9,8 +9,6 @@ initializeCarMap = function() {
     incarMapObject = new google.maps.Map(document.getElementById("car-map-canvas"), mapOptions);
 
     populateCarMapPins();
-
-
     calculateResting();
 }
 
