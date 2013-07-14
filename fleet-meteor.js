@@ -1,4 +1,16 @@
 if (Meteor.isClient) {
+
+  Template.sideMenu.helpers({
+    carColor: function () {
+      if(Meteor.user()){
+        if(Meteor.user().username === "carOne")
+          return "Red Car";
+        else
+          return "Blue Car";
+      }
+    }
+  });
+
   Template.sideMenu.baseUrl = function () {
     return Session.get('baseUrl');
   };
@@ -51,6 +63,11 @@ if (Meteor.isClient) {
 //      var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/Knight%20Rider%20Theme%20Song%20Bass.mp3';
 //      audioHandle = gm.media.play(mp3Url, 'mixedAudio');
 //      console.log('clicked', mp3Url);
+    },
+    'click #readyPosition' : function () {
+      //Set destination for NAV
+      var options = {latitude:(Meteor.user().profile.restingLocation.latitude / 0.000000277777777778), longitude:(Meteor.user().profile.restingLocation.longitude / 0.000000277777777778)};
+      gm.nav.setDestination(function(){}, function(){}, options);
     },
     'click #storeLocation' : function () {
       gm.info.getCurrentPosition(function(Position){
@@ -161,12 +178,14 @@ var dispatchServiceEvents = function(){
       console.log("CarOneDist: ", carOneDist);
       console.log("carTwoDist: ", carTwoDist);
 
+      var currentTime = new Date().getTime();
+
       if(carOneDist < carTwoDist){
         console.log("Dispatch Car one!");
-        Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carOne._id}});
+        Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carOne._id, 'serviceStatus.requestTime':currentTime}});
       }else{
         console.log("Dispatch Car two!");
-        Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carTwo._id}});
+        Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carTwo._id, 'serviceStatus.requestTime':currentTime}});
       }
     }
   });

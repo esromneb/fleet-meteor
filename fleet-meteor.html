@@ -49,17 +49,18 @@
 	{{#unless currentUser}}
 	{{> login}}
 	{{/unless}}
-	<input id="playRider" type="button" value="Click" />
 	{{#if currentUser}}
-	<p>Current Car: {{currentUser.username}}</p>
+	<p>{{carColor}}</p>
 	<!--<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>-->
 	{{/if}}
 	<!--<p>Base url: {{baseUrl}}</p>-->
 
 
 	{{#if currentUser}}
-	<input id="storeLocation" type="button" class="btn btn-primary"value="Location into db" />
-	<a id="logout" href="#" class="btn btn-danger" ><i class="icon-truck"></i> Logout</a>
+	{{#isolate}}
+	<a id="readyPosition" class="btn btn-primary"><i class="icon-map-marker"></i> Ready Position</a>
+	<a id="logout" href="#" class="btn btn-danger" ><i class="icon-signout"></i>Logout</a>
+	{{/isolate}}
 	{{/if}}
 </template>
 
@@ -70,29 +71,4 @@
 		<a id="carOne" href="#" type="button" class="btn btn-primary" value="Car One" ><i class="icon-dashboard"></i> Car One</a>
 		<a id="carTwo" href="#" type="button" class="btn btn-primary" value="Car Two" ><i class="icon-dashboard"></i> Car Two</a>
 	</p>
-</template>
-
-<template name="audioTestButtons">
-
-  <a href="http://localhost/broken">link to nowhere</a>
-
-    
-    <div class="group">
-    	<div class="title">
-    		AUDIO
-    	</div>
-    	<div class="field">
-    		<h3>gm.media.play</h3><div id="audio-play"></div>
-    	</div>
-    	<div class="field">
-			<h3>gm.audio.pause</h3><div id="audio-pause"></div>
-		</div>
-		<div class="field">
-			<h3>gm.media.seek</h3><div id="audio-seek"></div>
-		</div>
-		<div class="field">
-    		<h3>gm.media.stop</h3><div id="audio-stop"></div>
-    	</div>
-    </div>
-    
 </template>
