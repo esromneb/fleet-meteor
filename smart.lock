@@ -5,7 +5,8 @@
       "router": {},
       "font-awesome": {},
       "presence": {},
-      "npm": {}
+      "npm": {},
+      "bootboxjs": {}
     },
     "packages": {
       "router": {
@@ -27,6 +28,11 @@
         "git": "https://github.com/arunoda/meteor-npm.git",
         "tag": "v0.1.4",
         "commit": "68ab2b952ab21a5bbba879b37be9385ec8ff6d63"
+      },
+      "bootboxjs": {
+        "git": "https://github.com/TimHeckel/meteor-bootboxjs.git",
+        "tag": "v3.2.0",
+        "commit": "6088b5b6ec13304457394cd358cbdc5f3def1a1c"
       },
       "page-js-ie-support": {
         "git": "https://github.com/tmeasday/meteor-page-js-ie-support.git",

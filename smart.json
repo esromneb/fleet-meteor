@@ -3,6 +3,7 @@
     "router": {},
     "font-awesome": {},
     "presence": {},
-    "npm": {}
+    "npm": {},
+    "bootboxjs": {}
   }
 }
