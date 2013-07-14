@@ -16,37 +16,31 @@ initializeCarMap = function() {
     liveUpdatePinsOnMap();
 
 
-
-    google.maps.event.addListener(incarMapObject, 'click', function(event) {
-        // 3 seconds after the center of the map has changed, pan back to the
-        // marker.
-
-
-        bootbox.dialog("Add a pin?", [{
-            "label" : "Yes!",
-            "class" : "btn-success",
-            "callback": function() {
-                var lat = event.latLng.jb;
-                var lon = event.latLng.kb;
-
-                Destinations.insert({lat:lat, lon:lon});
-            }
-        }, {
-            "label" : "No.",
-            "class" : "btn-danger",
-            "callback": function() {
-
-            }
-        }]);
+    if( !Session.get('mapIsInCar') )
+    {
+        google.maps.event.addListener(incarMapObject, 'click', function(event) {
+            // 3 seconds after the center of the map has changed, pan back to the
+            // marker.
 
 
-//        console.log('click');
+            bootbox.dialog("Add a pin?", [{
+                "label" : "Yes!",
+                "class" : "btn-success",
+                "callback": function() {
+                    var lat = event.latLng.jb;
+                    var lon = event.latLng.kb;
 
+                    Destinations.insert({lat:lat, lon:lon});
+                }
+            }, {
+                "label" : "No.",
+                "class" : "btn-danger",
+                "callback": function() {
 
-//    window.setTimeout(function() {
-//        map.panTo(marker.getPosition());
-//    }, 3000);
-    });
+                }
+            }]);
+        });
+    }
 
 };
 
