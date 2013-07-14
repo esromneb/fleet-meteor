@@ -173,3 +173,4 @@ var dispatchServiceEvents = function(){
 };
 
 // Destinations.update("XaaQjPKFXocszSvr5", {$set:{'serviceStatus.state':"pending"}});
+//Destinations.update("Wm58tipWpgbqJektp", {$set:{lat:37.729949}});

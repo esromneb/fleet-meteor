@@ -1,5 +1,6 @@
 incarMapObject = null;
 mapPopouts = [];
+pinsOnMap = {};
 
 initializeCarMap = function() {
     console.log('in initializeCarMap');
@@ -10,8 +11,9 @@ initializeCarMap = function() {
     };
     incarMapObject = new google.maps.Map(document.getElementById("car-map-canvas"), mapOptions);
 
-    populateCarMapPins();
+    //populateCarMapPins();
     showCarPositionsWithMarkers();
+    liveUpdatePinsOnMap();
 //    calculateResting();
 };
 
@@ -19,7 +21,14 @@ initializeCarMap = function() {
 Template.incarMap.rendered = function () {
   console.log('about to attach map loader from car');
 
-  initializeCarMap();
+  if( google )
+  {
+    initializeCarMap();
+  }
+  else
+  {
+    setTimeout(initializeCarMap,4000);
+  }
 
   //Live update Car location into DB
   Meteor.setInterval(function(){
@@ -35,10 +44,10 @@ Template.incarMap.rendered = function () {
 };
 
 
-markPinAsPending(_id)
-{
-//    Destinations.update(_id, {$set: { 'serviceStatus.state': 'pending' }});
-}
+//markPinAsPending(_id)
+//{
+////    Destinations.update(_id, {$set: { 'serviceStatus.state': 'pending' }});
+//}
 
 populateCarMapPins = function()
 {
@@ -57,10 +66,10 @@ populateCarMapPins = function()
 
             var contentHtml = "" + pin.lat + "," + pin.lon;
 
-            if( !incar )
-            {
-                contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
-            }
+//            if( !incar )
+//            {
+//                contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
+//            }
 
             // callout window (content can be full html)
             var infowindow = new google.maps.InfoWindow({
@@ -75,6 +84,7 @@ populateCarMapPins = function()
                 title:"",
                 draggable:true
             });
+            pinsOnMap[pin._id] = marker;
 
             // wire click for pin
             google.maps.event.addListener(marker, 'click', function() {
@@ -223,3 +233,59 @@ showCarPositionsWithMarkers = function()
   });
 
 }
+
+var liveUpdatePinsOnMap = function(){
+
+  var updatePinLocation = function(document){
+    var pinLatlng = new google.maps.LatLng(document.lat, document.lon);
+    pinsOnMap[document._id].setPosition(pinLatlng);
+  };
+
+  Destinations.find({}).observe({
+    added: function(document){
+      console.log("destination added!");
+
+      if(!pinsOnMap[document._id]){
+        var contentHtml = "" + document.lat + "," + document.lon;
+//        if( !incar )
+//        {
+//          contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
+//        }
+        var infowindow = new google.maps.InfoWindow({
+          content: contentHtml
+        });
+        mapPopouts.push(infowindow);
+
+        var pinLatlng = new google.maps.LatLng(document.lat, document.lon);
+        var marker = new google.maps.Marker({
+          position: pinLatlng,
+          title:"",
+          draggable:true
+        });
+        pinsOnMap[document._id] = marker;
+
+        // wire click for pin
+        google.maps.event.addListener(marker, 'click', function() {
+
+          for( x in mapPopouts )
+          {
+            var popout = mapPopouts[x];
+            popout.close();
+          }
+          infowindow.open(incarMapObject,marker);
+        });
+        marker.setMap(incarMapObject);
+      }
+      else{
+        updatePinLocation(document);
+      }
+
+
+    },
+    changed: function(newDocument, oldDocument){
+      console.log("destination changed!");
+      updatePinLocation(newDocument);
+    }
+  });
+
+};
