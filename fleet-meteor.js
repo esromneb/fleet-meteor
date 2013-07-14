@@ -80,11 +80,14 @@ if (Meteor.isServer) {
 //Look for pending events with my id, launch modal
 var watchForServiceEvents = function(){
   askedToRepond = false;
-  Destinations.find({'serviceStatus.state':"pending", 'serviceStatus.responderId':Meteor.userId()}).observe({
+  Destinations.find({$and: [{'serviceStatus.state':"pending"}, {'serviceStatus.responderId':Meteor.userId()}]}).observe({
     added: function(document){
-      Destinations.update(document._id, {$set:{'serviceStatus.state': "asked"}});
+      Destinations.update(document._id, {$set:{'serviceStatus.state': "asked", 'serviceStatus.responderId':Meteor.userId()}});
       //New Situation
-      if(!askedToRepond){
+      console.log("I see a situation with my id! according to meteor my id is: ", Meteor.userId());
+      console.log("id on the situation is: ", document.serviceStatus.responderId);
+      console.log("Document IN watchforEvents: ", document);
+      if(!askedToRepond && document.serviceStatus.responderId === Meteor.userId()){
 
         var mp3UrlCoin = Session.get('baseUrl') + '/preview/Fleet/media/Coin.mp3';
         audioHandleCoin = gm.media.play(mp3UrlCoin, 'mixedAudio');
@@ -145,10 +148,10 @@ var dispatchServiceEvents = function(){
       var currentTime = new Date().getTime();
 
       if(carOneDist < carTwoDist){
-        console.log("Dispatch Car one(RED)!");
+        console.log("Dispatch Car one(RED)! _id: ", carOne._id);
         Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carOne._id, 'serviceStatus.requestTime':currentTime}});
       }else{
-        console.log("Dispatch Car two(BLUE)!");
+        console.log("Dispatch Car two(BLUE)! _id: ", carTwo._id);
         Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carTwo._id, 'serviceStatus.requestTime':currentTime}});
       }
     }
