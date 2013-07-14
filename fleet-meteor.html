@@ -2,8 +2,14 @@
   <title>fleet-meteor</title>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhpxGfSITF109slWNejYWhtUoO6TSireI&sensor=true"></script>
 </head>
-
 <body>
+{{#isolate}}
+{{renderPage}}
+{{/isolate}}
+</body>
+
+
+<template name="GMDash">
 	<div class="container-fluid">
 	  <div class="row-fluid">
 		  <div id="header" class="span12">
@@ -27,7 +33,7 @@
 		  </div>
 	  </div>
   </div>
-</body>
+</template>
 
 <template name="header">
 	<h1 id="title">Fleet</h1>
