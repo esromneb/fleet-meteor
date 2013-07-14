@@ -84,47 +84,98 @@ showCarPositionsWithMarkers = function()
   console.log("CAR one init pos: ", carOneStartPos);
   var carOneMarker = new google.maps.Marker({
     position: carOneLatlng,
-    title:"Car One"
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 6,
+      strokeColor: '#00F',
+      fillColor: '#FFF',
+      fillOpacity: 1
+    },
+    title:"Car One",
+    map:incarMapObject
   });
-  carOneMarker.setMap(incarMapObject);
 
   //CarTwo
   var carTwoStartPos = Users.findOne({username:"carTwo"}).profile.location;
   var carTwoLatlng = new google.maps.LatLng(carTwoStartPos.latitude, carTwoStartPos.longitude);
   var carTwoMarker = new google.maps.Marker({
     position: carTwoLatlng,
-    title:"Car Two"
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 6,
+      strokeColor: '#FFF',
+      fillColor: '#00F',
+      fillOpacity: 1
+    },
+    title:"Car Two",
+    map:incarMapObject
   });
-  carTwoMarker.setMap(incarMapObject);
+
+
+  //RestOne
+  var restOneStartPos = Users.findOne({username:"carOne"}).profile.restingLocation;
+  var restOneLatlng = new google.maps.LatLng(restOneStartPos.latitude, restOneStartPos.longitude);
+
+    var circleOneOptions = {
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.0,
+        strokeWeight: 0,
+        fillColor: '#0000FF',
+        fillOpacity: 0.25,
+        map: incarMapObject,
+        center: restOneLatlng,
+        radius: 500
+    };
+
+    var restOneMarker = new google.maps.Circle(circleOneOptions);
+
+    //RestTwo
+    var restTwoStartPos = Users.findOne({username:"carTwo"}).profile.restingLocation;
+    var restTwoLatlng = new google.maps.LatLng(restTwoStartPos.latitude, restTwoStartPos.longitude);
+
+    var circleTwoOptions = {
+        strokeColor: '#00F',
+        strokeOpacity: 1,
+        strokeWeight: 1,
+        fillColor: '#DDD',
+        fillOpacity: 0.66,
+        map: incarMapObject,
+        center: restTwoLatlng,
+        radius: 500
+    };
+
+    var restTwoMarker = new google.maps.Circle(circleTwoOptions);
+
+    var carOneAddedOrChanged = function(id, fields)
+    {
+        if(fields.profile.location){
+            var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+            carOneMarker.setPosition(carOneLatlng);
+
+            var restOneLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
+            restOneMarker.setCenter(restOneLatlng);
+        }
+    };
+
+    var carTwoAddedOrChanged = function(id, fields)
+    {
+        if(fields.profile.location){
+            var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+            carTwoMarker.setPosition(carTwoLatlng);
+
+            var restTwoLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
+            restTwoMarker.setCenter(restTwoLatlng);
+        }
+    };
 
   Users.find({username:"carOne"}).observeChanges({
-    added: function(id, fields) {
-      if(fields.profile.location){
-        var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
-        carOneMarker.setPosition(carOneLatlng);
-      }
-    },
-    changed: function(id, fields) {
-      if(fields.profile.location){
-        var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
-        carOneMarker.setPosition(carOneLatlng);
-      }
-    }
+    added: carOneAddedOrChanged,
+    changed: carOneAddedOrChanged
   });
 
   Users.find({username:"carTwo"}).observeChanges({
-    added: function(id, fields) {
-      if(fields.profile.location){
-        var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
-        carTwoMarker.setPosition(carTwoLatlng);
-      }
-    },
-    changed: function(id, fields) {
-      if(fields.profile.location){
-        var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
-        carTwoMarker.setPosition(carTwoLatlng);
-      }
-    }
+    added: carTwoAddedOrChanged,
+    changed: carTwoAddedOrChanged
   });
 
 }
