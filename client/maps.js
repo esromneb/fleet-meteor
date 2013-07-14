@@ -96,9 +96,9 @@ showCarPositionsWithMarkers = function()
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       scale: 6,
-      strokeColor: '#00F',
-      fillColor: '#FFF',
-      fillOpacity: 1
+      strokeColor: '#F00',
+//      fillColor: '#FFF',
+//      fillOpacity: 1
     },
     title:"Car One",
     map:incarMapObject
@@ -117,9 +117,9 @@ showCarPositionsWithMarkers = function()
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       scale: 6,
-      strokeColor: '#FFF',
-      fillColor: '#00F',
-      fillOpacity: 1
+      strokeColor: '#00F',
+//      fillColor: '#00F',
+//      fillOpacity: 1
     },
     title:"Car Two",
     map:incarMapObject
@@ -136,11 +136,11 @@ showCarPositionsWithMarkers = function()
   var restOneLatlng = new google.maps.LatLng(restOneStartPos.latitude, restOneStartPos.longitude);
 
     var circleOneOptions = {
-        strokeColor: '#FF0000',
+        strokeColor: '#F00',
         strokeOpacity: 0.0,
         strokeWeight: 0,
-        fillColor: '#0000FF',
-        fillOpacity: 0.25,
+        fillColor: '#F00',
+        fillOpacity: 0.33,
         map: incarMapObject,
         center: restOneLatlng,
         radius: 500
@@ -159,10 +159,10 @@ showCarPositionsWithMarkers = function()
 
     var circleTwoOptions = {
         strokeColor: '#00F',
-        strokeOpacity: 1,
-        strokeWeight: 1,
-        fillColor: '#DDD',
-        fillOpacity: 0.66,
+        strokeOpacity: 0,
+        strokeWeight: 0,
+        fillColor: '#00F',
+        fillOpacity: 0.33,
         map: incarMapObject,
         center: restTwoLatlng,
         radius: 500
