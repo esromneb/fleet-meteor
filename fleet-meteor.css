@@ -1,1 +1,6 @@
 /* CSS declarations go here */
+#car-map-canvas {
+    /*margin-top:100px;*/
+    height: 400px;
+    width: 800px;
+}
