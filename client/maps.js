@@ -35,10 +35,11 @@ Template.incarMap.rendered = function () {
 };
 
 
-markPinAsPending(_id)
+markPinAsPending = function(pin)
 {
-//    Destinations.update(_id, {$set: { 'serviceStatus.state': 'pending' }});
-}
+    console.log('marking pin with id' + pin._id);
+    Destinations.update(pin._id, {$set: { serviceStatus:{ state:'pending'} }});
+};
 
 populateCarMapPins = function()
 {
