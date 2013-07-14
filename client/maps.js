@@ -2,6 +2,7 @@ incarMapObject = null;
 mapPopouts = [];
 
 initializeCarMap = function() {
+    console.log('in initializeCarMap');
     var mapOptions = {
         center: new google.maps.LatLng(37.596637,-122.400055),
         zoom: 9,
@@ -11,12 +12,14 @@ initializeCarMap = function() {
 
     populateCarMapPins();
     showCarPositionsWithMarkers();
-    calculateResting();
-}
+//    calculateResting();
+};
+
 
 Template.incarMap.rendered = function () {
-  console.log('about to attach map loader');
-  google.maps.event.addDomListener(window, 'load', initializeCarMap);
+  console.log('about to attach map loader from car');
+
+  initializeCarMap();
 
   //Live update Car location into DB
   Meteor.setInterval(function(){
@@ -78,10 +81,16 @@ populateCarMapPins = function()
 
 showCarPositionsWithMarkers = function()
 {
+
   //CarOne
-  var carOneStartPos = Users.findOne({username:"carOne"}).profile.location;
+  var userOne = Users.findOne({username:"carOne"});
+  var carOneStartPos = {latitude:0,longitude:0};
+  if(userOne && userOne.profile && userOne.profile.location)
+  {
+    carOneStartPos = Users.findOne({username:"carOne"}).profile.location;
+  }
   var carOneLatlng = new google.maps.LatLng(carOneStartPos.latitude, carOneStartPos.longitude);
-  console.log("CAR one init pos: ", carOneStartPos);
+
   var carOneMarker = new google.maps.Marker({
     position: carOneLatlng,
     icon: {
@@ -96,7 +105,12 @@ showCarPositionsWithMarkers = function()
   });
 
   //CarTwo
-  var carTwoStartPos = Users.findOne({username:"carTwo"}).profile.location;
+  var userTwo = Users.findOne({username:"carTwo"});
+  var carTwoStartPos = {latitude:0,longitude:0};
+  if( userTwo && userTwo.profile && userTwo.profile.location )
+  {
+    carTwoStartPos = Users.findOne({username:"carTwo"}).profile.location;
+  }
   var carTwoLatlng = new google.maps.LatLng(carTwoStartPos.latitude, carTwoStartPos.longitude);
   var carTwoMarker = new google.maps.Marker({
     position: carTwoLatlng,
@@ -113,7 +127,12 @@ showCarPositionsWithMarkers = function()
 
 
   //RestOne
-  var restOneStartPos = Users.findOne({username:"carOne"}).profile.restingLocation;
+  var restOneStartPos = {latitude:0,longitude:0};
+  if(userOne && userOne.profile && userOne.profile.location)
+  {
+    restOneStartPos = Users.findOne({username:"carOne"}).profile.restingLocation;
+  }
+
   var restOneLatlng = new google.maps.LatLng(restOneStartPos.latitude, restOneStartPos.longitude);
 
     var circleOneOptions = {
@@ -130,7 +149,12 @@ showCarPositionsWithMarkers = function()
     var restOneMarker = new google.maps.Circle(circleOneOptions);
 
     //RestTwo
-    var restTwoStartPos = Users.findOne({username:"carTwo"}).profile.restingLocation;
+    var restTwoStartPos = {latitude:0,longitude:0};
+    if( userTwo && userTwo.profile && userTwo.profile.location )
+    {
+        restTwoStartPos = Users.findOne({username:"carTwo"}).profile.restingLocation;
+    }
+
     var restTwoLatlng = new google.maps.LatLng(restTwoStartPos.latitude, restTwoStartPos.longitude);
 
     var circleTwoOptions = {
@@ -148,10 +172,12 @@ showCarPositionsWithMarkers = function()
 
     var carOneAddedOrChanged = function(id, fields)
     {
-        if(fields.profile.location){
+        if(fields.profile && fields.profile.location){
             var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
             carOneMarker.setPosition(carOneLatlng);
+        }
 
+        if(fields.profile && fields.profile.restingLocation){
             var restOneLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
             restOneMarker.setCenter(restOneLatlng);
         }
@@ -159,10 +185,12 @@ showCarPositionsWithMarkers = function()
 
     var carTwoAddedOrChanged = function(id, fields)
     {
-        if(fields.profile.location){
+        if(fields.profile && fields.profile.location){
             var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
             carTwoMarker.setPosition(carTwoLatlng);
+        }
 
+        if(fields.profile && fields.profile.restingLocation){
             var restTwoLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
             restTwoMarker.setCenter(restTwoLatlng);
         }
