@@ -28,7 +28,7 @@ if (Meteor.isClient) {
       gm.info.getCurrentPosition(function(Position){
          console.log("Var1 ", Position);
         if(Position && Position.coords){
-          Users.update(Meteor.userId(), {$set: { 'profile.location': Position.coords}});
+          Users.update(Meteor.userId(), {$set: { 'profile.location': {latitude: Position.coords.latitude * 0.000000277777777778, longitude: Position.coords.longitude * 0.000000277777777778} }});
         }
       });
     },
