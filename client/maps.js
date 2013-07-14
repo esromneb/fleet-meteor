@@ -116,8 +116,7 @@ showCarPositionsWithMarkers = function()
   var restOneStartPos = Users.findOne({username:"carOne"}).profile.restingLocation;
   var restOneLatlng = new google.maps.LatLng(restOneStartPos.latitude, restOneStartPos.longitude);
 
-
-    var circleOptions = {
+    var circleOneOptions = {
         strokeColor: '#FF0000',
         strokeOpacity: 0.0,
         strokeWeight: 0,
@@ -128,13 +127,33 @@ showCarPositionsWithMarkers = function()
         radius: 500
     };
 
-    var cityCircle = new google.maps.Circle(circleOptions);
+    var restOneMarker = new google.maps.Circle(circleOneOptions);
+
+    //RestTwo
+    var restTwoStartPos = Users.findOne({username:"carTwo"}).profile.restingLocation;
+    var restTwoLatlng = new google.maps.LatLng(restTwoStartPos.latitude, restTwoStartPos.longitude);
+
+    var circleTwoOptions = {
+        strokeColor: '#00F',
+        strokeOpacity: 1,
+        strokeWeight: 1,
+        fillColor: '#DDD',
+        fillOpacity: 0.66,
+        map: incarMapObject,
+        center: restTwoLatlng,
+        radius: 500
+    };
+
+    var restTwoMarker = new google.maps.Circle(circleTwoOptions);
 
     var carOneAddedOrChanged = function(id, fields)
     {
         if(fields.profile.location){
             var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
             carOneMarker.setPosition(carOneLatlng);
+
+            var restOneLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
+            restOneMarker.setCenter(restOneLatlng);
         }
     };
 
@@ -143,6 +162,9 @@ showCarPositionsWithMarkers = function()
         if(fields.profile.location){
             var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
             carTwoMarker.setPosition(carTwoLatlng);
+
+            var restTwoLatlng = new google.maps.LatLng(fields.profile.restingLocation.latitude, fields.profile.restingLocation.longitude);
+            restTwoMarker.setCenter(restTwoLatlng);
         }
     };
 
