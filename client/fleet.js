@@ -50,7 +50,7 @@ initAutoTestButtons = function()
 
 	// console.log(gm);
 
-	play();
+//	play();
 }
 
 
