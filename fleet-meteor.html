@@ -43,11 +43,10 @@
 	{{#unless currentUser}}
 	{{> login}}
 	{{/unless}}
-	{{greeting}}
 	<input id="playRider" type="button" value="Click" />
 	{{#if currentUser}}
 	<p>Current Car: {{currentUser.username}}</p>
-	<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>
+	<!--<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>-->
 	{{/if}}
 	<!--<p>Base url: {{baseUrl}}</p>-->
 
