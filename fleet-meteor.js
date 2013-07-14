@@ -117,13 +117,8 @@ var watchForServiceEvents = function(){
             audioHandle = gm.media.play(mp3Url, 'mixedAudio');
 
             //Tell DB I'm not coming
-            Destinations.update(document._id, {$set:{'serviceStatus.state': "busy"}});
+            //Destinations.update(document._id, {$set:{'serviceStatus.state': "busy"}});
             Destinations.update(document._id, {$set:{'serviceStatus.state': "busy", 'serviceStatus.responderId':null}});
-            if(Meteor.user().username === "carOne"){
-              Destinations.update(document._id, {$set:{'serviceStatus.state': "pending", 'serviceStatus.responderId':Users.findOne({username:"carTwo"})._id}});
-            }else{
-              Destinations.update(document._id, {$set:{'serviceStatus.state': "pending", 'serviceStatus.responderId':Users.findOne({username:"carOne"})._id}});
-            }
             askedToRepond = false;
             Session.set('onMyWay', false);
           }
@@ -150,10 +145,10 @@ var dispatchServiceEvents = function(){
       var currentTime = new Date().getTime();
 
       if(carOneDist < carTwoDist){
-        console.log("Dispatch Car one!");
+        console.log("Dispatch Car one(RED)!");
         Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carOne._id, 'serviceStatus.requestTime':currentTime}});
       }else{
-        console.log("Dispatch Car two!");
+        console.log("Dispatch Car two(BLUE)!");
         Destinations.update(document._id, {$set:{'serviceStatus.state':"pending", 'serviceStatus.responderId':carTwo._id, 'serviceStatus.requestTime':currentTime}});
       }
     }
