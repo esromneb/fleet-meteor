@@ -7,9 +7,32 @@
 </body>
 
 <template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+  <h1>Welcome to Fleet!</h1>
+	{{#unless currentUser}}
+		{{> login}}
+	{{/unless}}
+    {{greeting}}
+	<input id="playRider" type="button" value="Click" />
+	{{#if currentUser}}
+	<p>Current Car: {{currentUser.username}}</p>
+	<p>Car Location in DB: Lat: {{myLocation.latitude}} Long: {{myLocation.longitude}}</p>
+	{{/if}}
+	<p>Base url: {{baseUrl}}</p>
+
+
+	{{#if currentUser}}
+		<input id="storeLocation" type="button" class="btn btn-primary"value="Location into db" />
+		<a id="logout" href="#" class="btn btn-danger" ><i class="icon-truck"></i> Logout</a>
+	{{/if}}
+</template>
+
+
+<template name="login">
+	<h1>Which Car Are You?</h1>
+	<p>
+	<a id="carOne" href="#" type="button" class="btn btn-primary" value="Car One" ><i class="icon-dashboard"></i> Car One</a>
+	<a id="carTwo" href="#" type="button" class="btn btn-primary" value="Car Two" ><i class="icon-dashboard"></i> Car Two</a>
+	</p>
 </template>
 
 

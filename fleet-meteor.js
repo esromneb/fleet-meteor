@@ -2,12 +2,47 @@ if (Meteor.isClient) {
   Template.hello.greeting = function () {
     return "Welcome to fleet-meteor.";
   };
+  Template.hello.baseUrl = function () {
+    return Session.get('baseUrl');
+  };
+  Template.hello.myLocation = function () {
+    if(Meteor.user() && Meteor.user().profile && Meteor.user().profile.location){
+      return Meteor.user().profile.location;
+    }
+  };
+
+  Template.hello.created = function () {
+//    Meteor.loginWithPassword('carOne', 'pass');
+  };
 
   Template.hello.events({
-    'click input' : function () {
+    'click #playRider' : function () {
       // template data, if any, is available in 'this'
-      if (typeof console !== 'undefined')
-        console.log("You pressed the button");
+      var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/Knight%20Rider%20Theme%20Song%20Bass.mp3';
+      audioHandle = gm.media.play(mp3Url, 'mixedAudio');
+      console.log('clicked', mp3Url);
+    },
+    'click #storeLocation' : function () {
+      console.log("Current Position!")
+      var curPosition = null;
+      gm.info.getCurrentPosition(function(Position){
+         console.log("Var1 ", Position);
+        if(Position && Position.coords){
+          Users.update(Meteor.userId(), {$set: { 'profile.location': Position.coords}});
+        }
+      });
+    },
+    'click #logout' : function () {
+      Meteor.logout();
+    }
+  });
+
+  Template.login.events({
+    'click #carOne' : function () {
+      Meteor.loginWithPassword('carOne', 'pass');
+    },
+    'click #carTwo' : function () {
+      Meteor.loginWithPassword('carTwo', 'pass');
     }
   });
 }
