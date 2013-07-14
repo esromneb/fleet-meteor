@@ -9,7 +9,12 @@ initializeCarMap = function() {
     incarMapObject = new google.maps.Map(document.getElementById("car-map-canvas"), mapOptions);
 
     populateCarMapPins();
+
+
+    calculateResting();
 }
+
+
 
 if( Meteor.isClient )
 {
@@ -19,6 +24,8 @@ if( Meteor.isClient )
     });
 }
 
+mapPopouts = [];
+
 populateCarMapPins = function()
 {
     var d = Destinations.findOne();
@@ -27,28 +34,38 @@ populateCarMapPins = function()
 
     for( x in pins )
     {
-        var pin = pins[x];
 
-        // callout window (content can be full html)
-        var infowindow = new google.maps.InfoWindow({
-            content: "" + pin.lat + "," + pin.lon
-        });
+        (function()
+        {
+            var pin = pins[x];
 
-        var pinLatlng = new google.maps.LatLng(pin.lat, pin.lon);
-        var marker = new google.maps.Marker({
-            position: pinLatlng,
-            title:""
-        });
+            // callout window (content can be full html)
+            var infowindow = new google.maps.InfoWindow({
+                content: "" + pin.lat + "," + pin.lon
+            });
 
-        // wire click for pin
-        google.maps.event.addListener(marker, 'click', function() {
-            infowindow.open(incarMapObject,marker);
-        });
+            mapPopouts.push(infowindow);
 
-        // To add the marker to the map, call setMap();
-        marker.setMap(incarMapObject);
+            var pinLatlng = new google.maps.LatLng(pin.lat, pin.lon);
+            var marker = new google.maps.Marker({
+                position: pinLatlng,
+                title:""
+            });
 
-        (function(){});
+            // wire click for pin
+            google.maps.event.addListener(marker, 'click', function() {
+
+                for( x in mapPopouts )
+                {
+                    var popout = mapPopouts[x];
+                    popout.close();
+                }
+                infowindow.open(incarMapObject,marker);
+            });
+
+            // To add the marker to the map, call setMap();
+            marker.setMap(incarMapObject);
+        }).call(this);
     }
 
 //    console.log(d);

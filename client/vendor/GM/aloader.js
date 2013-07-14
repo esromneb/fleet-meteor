@@ -1,1 +1,1 @@
-gm=window.parent.gm,_nativeConsole=console,console.log=window.parent.Emulator.console.log
+gm=window.parent.gm, _nativeConsole=console//, console.log=window.parent.Emulator.console.log
