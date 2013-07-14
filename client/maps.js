@@ -228,7 +228,7 @@ var liveUpdatePinsOnMap = function(){
         var marker = new google.maps.Marker({
           position: pinLatlng,
           title:"",
-          draggable:true
+          draggable:!incar
         });
         pinsOnMap[document._id] = marker;
 
@@ -242,6 +242,15 @@ var liveUpdatePinsOnMap = function(){
           }
           infowindow.open(incarMapObject,marker);
         });
+
+
+        google.maps.event.addListener(marker,'dragend',function(event){
+            var lat = event.latLng.jb;
+            var lon = event.latLng.kb;
+           Destinations.update(document._id, {$set: {lat:lat, lon:lon }});
+           console.log(document._id + "  " + lat + "," +lon);
+        });
+
         marker.setMap(incarMapObject);
       }
       else{
