@@ -10,12 +10,25 @@ initializeCarMap = function() {
     incarMapObject = new google.maps.Map(document.getElementById("car-map-canvas"), mapOptions);
 
     populateCarMapPins();
+    showCarPositionsWithMarkers();
     calculateResting();
 }
 
 Template.incarMap.rendered = function () {
   console.log('about to attach map loader');
   google.maps.event.addDomListener(window, 'load', initializeCarMap);
+
+  //Live update Car location into DB
+  Meteor.setInterval(function(){
+    if(Meteor.user()){
+      gm.info.getCurrentPosition(function(Position){
+        if(Position && Position.coords){
+          Users.update(Meteor.userId(), {$set: { 'profile.location': {latitude: Position.coords.latitude * 0.000000277777777778, longitude: Position.coords.longitude * 0.000000277777777778} }});
+        }
+      });
+    }
+
+  }, 200);
 };
 
 populateCarMapPins = function()
@@ -61,4 +74,57 @@ populateCarMapPins = function()
     }
 
 //    console.log(d);
+}
+
+showCarPositionsWithMarkers = function()
+{
+  //CarOne
+  var carOneStartPos = Users.findOne({username:"carOne"}).profile.location;
+  var carOneLatlng = new google.maps.LatLng(carOneStartPos.latitude, carOneStartPos.longitude);
+  console.log("CAR one init pos: ", carOneStartPos);
+  var carOneMarker = new google.maps.Marker({
+    position: carOneLatlng,
+    title:"Car One"
+  });
+  carOneMarker.setMap(incarMapObject);
+
+  //CarTwo
+  var carTwoStartPos = Users.findOne({username:"carTwo"}).profile.location;
+  var carTwoLatlng = new google.maps.LatLng(carTwoStartPos.latitude, carTwoStartPos.longitude);
+  var carTwoMarker = new google.maps.Marker({
+    position: carTwoLatlng,
+    title:"Car Two"
+  });
+  carTwoMarker.setMap(incarMapObject);
+
+  Users.find({username:"carOne"}).observeChanges({
+    added: function(id, fields) {
+      if(fields.profile.location){
+        var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+        carOneMarker.setPosition(carOneLatlng);
+      }
+    },
+    changed: function(id, fields) {
+      if(fields.profile.location){
+        var carOneLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+        carOneMarker.setPosition(carOneLatlng);
+      }
+    }
+  });
+
+  Users.find({username:"carTwo"}).observeChanges({
+    added: function(id, fields) {
+      if(fields.profile.location){
+        var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+        carTwoMarker.setPosition(carTwoLatlng);
+      }
+    },
+    changed: function(id, fields) {
+      if(fields.profile.location){
+        var carTwoLatlng = new google.maps.LatLng(fields.profile.location.latitude, fields.profile.location.longitude);
+        carTwoMarker.setPosition(carTwoLatlng);
+      }
+    }
+  });
+
 }

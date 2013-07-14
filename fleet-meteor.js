@@ -1,7 +1,4 @@
 if (Meteor.isClient) {
-  Template.sideMenu.greeting = function () {
-    return "Welcome to fleet-meteor.";
-  };
   Template.sideMenu.baseUrl = function () {
     return Session.get('baseUrl');
   };
@@ -12,7 +9,9 @@ if (Meteor.isClient) {
   };
 
   Template.sideMenu.created = function () {
-//    Meteor.loginWithPassword('carOne', 'pass');
+//    Meteor.setInterval(function(){
+//
+//    }, 200);
   };
 
   Template.sideMenu.events({
@@ -23,10 +22,8 @@ if (Meteor.isClient) {
       console.log('clicked', mp3Url);
     },
     'click #storeLocation' : function () {
-      console.log("Current Position!")
-      var curPosition = null;
       gm.info.getCurrentPosition(function(Position){
-         console.log("Var1 ", Position);
+         console.log("Current Position ", Position);
         if(Position && Position.coords){
           Users.update(Meteor.userId(), {$set: { 'profile.location': {latitude: Position.coords.latitude * 0.000000277777777778, longitude: Position.coords.longitude * 0.000000277777777778} }});
         }
