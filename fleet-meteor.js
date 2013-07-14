@@ -85,6 +85,10 @@ var watchForServiceEvents = function(){
       Destinations.update(document._id, {$set:{'serviceStatus.state': "asked"}});
       //New Situation
       if(!askedToRepond){
+
+        var mp3UrlCoin = Session.get('baseUrl') + '/preview/Fleet/media/Coin.mp3';
+        audioHandleCoin = gm.media.play(mp3UrlCoin, 'mixedAudio');
+
         askedToRepond = true;
         bootbox.dialog("A situation is underway, are you ready?", [{
           "label" : "Yes, I'm on the case!",
