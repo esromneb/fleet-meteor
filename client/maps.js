@@ -14,7 +14,40 @@ initializeCarMap = function() {
     //populateCarMapPins();
     showCarPositionsWithMarkers();
     liveUpdatePinsOnMap();
-//    calculateResting();
+
+
+
+    google.maps.event.addListener(incarMapObject, 'click', function(event) {
+        // 3 seconds after the center of the map has changed, pan back to the
+        // marker.
+
+
+        bootbox.dialog("Add a pin?", [{
+            "label" : "Yes!",
+            "class" : "btn-success",
+            "callback": function() {
+                var lat = event.latLng.jb;
+                var lon = event.latLng.kb;
+
+                Destinations.insert({lat:lat, lon:lon});
+            }
+        }, {
+            "label" : "No.",
+            "class" : "btn-danger",
+            "callback": function() {
+
+            }
+        }]);
+
+
+//        console.log('click');
+
+
+//    window.setTimeout(function() {
+//        map.panTo(marker.getPosition());
+//    }, 3000);
+    });
+
 };
 
 
