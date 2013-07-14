@@ -1,9 +1,11 @@
 <head>
   <title>fleet-meteor</title>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhpxGfSITF109slWNejYWhtUoO6TSireI&sensor=true"></script>
 </head>
 
 <body>
   {{> hello}}
+  {{> incarMap}}
 </body>
 
 <template name="hello">
@@ -35,6 +37,10 @@
 	</p>
 </template>
 
+
+<template name="incarMap">
+    <div id="car-map-canvas"/>
+</template>
 
 <template name="audioTestButtons">
 
