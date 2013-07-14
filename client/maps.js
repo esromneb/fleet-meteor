@@ -41,6 +41,21 @@ markPinAsPending = function(pin)
     Destinations.update(pin._id, {$set: { serviceStatus:{ state:'pending'} }});
 };
 
+var htmlPopupForPin = function(pin)
+{
+    var status = 'idle';
+    var statusImg = '<img src="/img/29-heart.png">';
+
+    if( false )
+    {
+        status = 'pending';
+        statusImg = '<img src="/img/03-loopback.png">';
+    }
+    return "<h5>Destination</h5><h6>Status: " + status + " " + statusImg + "</h6><a href='#' class='btn'><img src='/img/63-runner.png'/> Send a Car</a>" +
+        "<br>" +
+        "";
+}
+
 populateCarMapPins = function()
 {
     var d = Destinations.findOne();
@@ -60,7 +75,7 @@ populateCarMapPins = function()
 
             if( !incar )
             {
-                contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
+                contentHtml = htmlPopupForPin(pin);
             }
 
             // callout window (content can be full html)
