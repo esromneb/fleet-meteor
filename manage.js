@@ -2,7 +2,9 @@ if (Meteor.isClient) {
   Template.manage.rendered = function () {
     console.log('about to attach map loader from management');
 
-      initializeCarMap();
+      // hard wait till pins collection is avail
+      setTimeout(initializeCarMap,1000);
+
 
 
   };

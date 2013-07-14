@@ -34,11 +34,19 @@ Template.incarMap.rendered = function () {
   }, 200);
 };
 
+
+markPinAsPending(_id)
+{
+//    Destinations.update(_id, {$set: { 'serviceStatus.state': 'pending' }});
+}
+
 populateCarMapPins = function()
 {
     var d = Destinations.findOne();
 
     var pins = Destinations.find().fetch();
+
+    var incar = Session.get('mapIsInCar');
 
     for( x in pins )
     {
@@ -47,9 +55,16 @@ populateCarMapPins = function()
         {
             var pin = pins[x];
 
+            var contentHtml = "" + pin.lat + "," + pin.lon;
+
+            if( !incar )
+            {
+                contentHtml = "lol ios";//"<img src='/public/img/63-runner.png'/>";
+            }
+
             // callout window (content can be full html)
             var infowindow = new google.maps.InfoWindow({
-                content: "" + pin.lat + "," + pin.lon
+                content: contentHtml
             });
 
             mapPopouts.push(infowindow);
@@ -57,7 +72,8 @@ populateCarMapPins = function()
             var pinLatlng = new google.maps.LatLng(pin.lat, pin.lon);
             var marker = new google.maps.Marker({
                 position: pinLatlng,
-                title:""
+                title:"",
+                draggable:true
             });
 
             // wire click for pin
