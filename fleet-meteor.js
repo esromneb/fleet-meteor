@@ -82,54 +82,61 @@ var watchForServiceEvents = function(){
   askedToRepond = false;
   Destinations.find({$and: [{'serviceStatus.state':"pending"}, {'serviceStatus.responderId':Meteor.userId()}]}).observe({
     added: function(document){
-      Destinations.update(document._id, {$set:{'serviceStatus.state': "asked", 'serviceStatus.responderId':Meteor.userId()}});
-      //New Situation
-      console.log("I see a situation with my id! according to meteor my id is: ", Meteor.userId());
-      console.log("id on the situation is: ", document.serviceStatus.responderId);
-      console.log("Document IN watchforEvents: ", document);
-      if(!askedToRepond && document.serviceStatus.responderId === Meteor.userId()){
-
-        var mp3UrlCoin = Session.get('baseUrl') + '/preview/Fleet/media/Coin.mp3';
-        audioHandleCoin = gm.media.play(mp3UrlCoin, 'mixedAudio');
-
-        askedToRepond = true;
-        bootbox.dialog("A situation is underway, are you ready?", [{
-          "label" : "Yes, I'm on the case!",
-          "class" : "btn-success",
-          "callback": function() {
-
-            var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/DukeAndKnight.mp3';
-            audioHandle = gm.media.play(mp3Url, 'mixedAudio');
-
-            var options = {latitude:(document.lat / 0.000000277777777778), longitude:(document.lon / 0.000000277777777778)};
-
-            console.log(options);
-            //Set destination for NAV
-            gm.nav.setDestination(function(){}, function(){}, options);
-
-            //Update DB status, on my way...
-            Destinations.update(document._id, {$set:{'serviceStatus.state': "responding"}});
-            askedToRepond = false;
-            Session.set('onMyWay', true);
-          }
-        }, {
-          "label" : "Nope, can't make it.",
-          "class" : "btn-danger",
-          "callback": function() {
-            var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/QuitWastingMyTime.mp3';
-            audioHandle = gm.media.play(mp3Url, 'mixedAudio');
-
-            //Tell DB I'm not coming
-            //Destinations.update(document._id, {$set:{'serviceStatus.state': "busy"}});
-            Destinations.update(document._id, {$set:{'serviceStatus.state': "busy", 'serviceStatus.responderId':null}});
-            askedToRepond = false;
-            Session.set('onMyWay', false);
-          }
-        }]);
-      }
-
+      hacketyHack(document);
+    },
+    changed: function(newDocument, oldDocument){
+      hacketyHack(newDocument);
     }
   });
+};
+
+var hacketyHack = function(document){
+  //New Situation
+  console.log("I see a situation with my id! according to meteor my id is: ", Meteor.userId());
+  console.log("id on the situation is: ", document.serviceStatus.responderId);
+  console.log("Document IN watchforEvents: ", document);
+  if(!askedToRepond && document.serviceStatus.responderId === Meteor.userId()){
+    Destinations.update(document._id, {$set:{'serviceStatus.state': "asked", 'serviceStatus.responderId':Meteor.userId()}});
+
+    var mp3UrlCoin = Session.get('baseUrl') + '/preview/Fleet/media/Coin.mp3';
+    audioHandleCoin = gm.media.play(mp3UrlCoin, 'mixedAudio');
+
+    askedToRepond = true;
+    bootbox.dialog("A situation is underway, are you ready?", [{
+      "label" : "Yes, I'm on the case!",
+      "class" : "btn-success",
+      "callback": function() {
+
+        var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/DukeAndKnight.mp3';
+        audioHandle = gm.media.play(mp3Url, 'mixedAudio');
+
+        var options = {latitude:(document.lat / 0.000000277777777778), longitude:(document.lon / 0.000000277777777778)};
+
+        console.log(options);
+        //Set destination for NAV
+        gm.nav.setDestination(function(){}, function(){}, options);
+
+        //Update DB status, on my way...
+        Destinations.update(document._id, {$set:{'serviceStatus.state': "responding"}});
+        askedToRepond = false;
+        Session.set('onMyWay', true);
+      }
+    }, {
+      "label" : "Nope, can't make it.",
+      "class" : "btn-danger",
+      "callback": function() {
+        var mp3Url = Session.get('baseUrl') + '/preview/Fleet/media/QuitWastingMyTime.mp3';
+        audioHandle = gm.media.play(mp3Url, 'mixedAudio');
+
+        //Tell DB I'm not coming
+        //Destinations.update(document._id, {$set:{'serviceStatus.state': "busy"}});
+        Destinations.update(document._id, {$set:{'serviceStatus.state': "busy", 'serviceStatus.responderId':null}});
+        askedToRepond = false;
+        Session.set('onMyWay', false);
+      }
+    }]);
+  }
+
 };
 
 //Look for pending events, launch modal, update car id with closest car
